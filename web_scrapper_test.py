@@ -49,3 +49,7 @@ s3.put_object(
     Bucket=S3_BUCKET, 
     Key=json_filename
 )
+
+# Save in JSON format locally
+# with open(json_filename, "w", encoding="utf-8") as f:
+#     json.dump(data, f, ensure_ascii=False, indent=4)
