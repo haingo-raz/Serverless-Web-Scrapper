@@ -1,6 +1,6 @@
 import json
 import boto3
-from web_scrapper import scrape_website
+from web_scraper import scrape_website
 
 S3_BUCKET = "wikipediaonthisdaypfc710"
 

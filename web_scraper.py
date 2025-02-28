@@ -1,11 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-import boto3
-
-# S3 instance
-s3 = boto3.client('s3')
-S3_BUCKET = "wikipediaonthisdaypfc710"
 
 def scrape_website():
     # Wikipedia URL
