@@ -16,7 +16,7 @@ soup = BeautifulSoup(page.content, "html.parser")
 
 # Locate "On this day" section
 otd_content = soup.find("div", id="mp-otd") # Events will be the direct children of the div with id mp-otd
-otd_births_and_deaths = soup.select("div#mp-otd > div.hlist > ul > li")
+otd_births_and_deaths = soup.select("div#mp-otd div.hlist ul li")
 
 events = []
 births = []
