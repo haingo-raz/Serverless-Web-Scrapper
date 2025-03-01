@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Scraping - On This Day</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 90vw;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        ul {
+            margin: 15px;
+            padding: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            list-style-type: none;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <h1>On This Day - Wikipedia</h1>
+        <p>Displaying events, births, and deaths for today.</p>
+
+        <div id="events" class="events">
+            <h2>Events</h2>
+            <ul id="events-list"></ul>
+        </div>
+
+        <div id="births" class="births">
+            <h2>Births</h2>
+            <ul id="births-list"></ul>
+        </div>
+
+        <div id="deaths" class="deaths">
+            <h2>Deaths</h2>
+            <ul id="deaths-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        // S3 bucket URL where the JSON data is stored
+        const bucketUrl = 'https://wikipediaonthisdaypfc710.s3.amazonaws.com/';
+
+        // Formayt the date
+        function formatDate(date) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options); // "February 28, 2025"
+        }
+
+        // Fetch and display data
+        async function fetchData() {
+            try {
+                const today = new Date();
+                const todayString = formatDate(today);  // Month Day, Year
+                
+                // Construct today's file URL
+                const todayFileUrl = bucketUrl + `on_this_day_${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}.json`;
+
+                console.log(`Attempting to fetch data from: ${todayFileUrl}`);
+
+                // Try fetching today's data file
+                const response = await fetch(todayFileUrl);
+
+                if (!response.ok) {
+                    throw new Error(`No data available for today. Please try again later.`);
+                }
+
+                // Parse and display the data
+                const data = await response.json();
+                const dailyData = data[todayString];
+
+                if (!dailyData) {
+                    throw new Error(`No data found for today.`);
+                }
+
+                const { events, births, deaths } = dailyData;
+
+                // Populate events, births, and deaths
+                const eventsList = document.getElementById('events-list');
+                const birthsList = document.getElementById('births-list');
+                const deathsList = document.getElementById('deaths-list');
+
+                // Clear any previous data
+                eventsList.innerHTML = '';
+                birthsList.innerHTML = '';
+                deathsList.innerHTML = '';
+
+                // Display the events, births, and deaths
+                events.forEach(event => {
+                    const li = document.createElement('li');
+                    li.textContent = event;
+                    eventsList.appendChild(li);
+                });
+
+                births.forEach(birth => {
+                    const li = document.createElement('li');
+                    li.textContent = birth;
+                    birthsList.appendChild(li);
+                });
+
+                deaths.forEach(death => {
+                    const li = document.createElement('li');
+                    li.textContent = death;
+                    deathsList.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+
+                // If the data is not available
+                const eventsList = document.getElementById('events-list');
+                const birthsList = document.getElementById('births-list');
+                const deathsList = document.getElementById('deaths-list');
+
+                eventsList.innerHTML = `<li>Data for today is not available yet. Please check back later.</li>`;
+                birthsList.innerHTML = `<li>Data for today is not available yet. Please check back later.</li>`;
+                deathsList.innerHTML = `<li>Data for today is not available yet. Please check back later.</li>`;
+            }
+        }
+
+        // Upon page loading
+        window.onload = fetchData;
+    </script>
+
+</body>
+</html>
