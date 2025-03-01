@@ -40,7 +40,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>On This Day - Wikipedia</h1>
+        <h1>On This Day - Wikipedia - <span id="today-date"></span></h1>
         <p>Displaying events, births, and deaths for today.</p>
 
         <div id="events" class="events">
@@ -74,6 +74,9 @@
             try {
                 const today = new Date();
                 const todayString = formatDate(today);  // Month Day, Year
+
+                const todayDateElement = document.getElementById('today-date');
+                todayDateElement.textContent = todayString;
                 
                 // Construct today's file URL
                 const todayFileUrl = bucketUrl + `on_this_day_${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}.json`;
