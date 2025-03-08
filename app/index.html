@@ -65,7 +65,7 @@
 
         // Formayt the date
         function formatDate(date) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const options = { year: 'numeric', month: 'long', day: '2-digit' };
             return date.toLocaleDateString('en-US', options); // "February 28, 2025"
         }
 
